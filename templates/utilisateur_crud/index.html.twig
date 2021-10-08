@@ -11,7 +11,7 @@
             <th>Id</th>
             <th>Pseudo</th>
             <th>Roles</th>
-            <th>actions</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -21,8 +21,9 @@
             <td>{{ utilisateur.pseudo }}</td>
             <td>{{ utilisateur.roles ? utilisateur.roles|join(', ') : '' }}</td>
             <td>
-                <a href="{{ path('utilisateur_crud_show', {'id': utilisateur.id}) }}" class="btn btn-primary">show</a>
-                <a href="{{ path('utilisateur_crud_edit', {'id': utilisateur.id}) }}" class="btn btn-warning">edit</a>
+                <a href="{{ path('utilisateur_crud_show', {'id': utilisateur.id}) }}" class="btn btn-primary">Voir</a>
+                <a href="{{ path('utilisateur_crud_edit', {'id': utilisateur.id}) }}" class="btn btn-warning">Éditer</a>
+                {{ include('utilisateur_crud/_delete_form.html.twig') }}
             </td>
         </tr>
         {% else %}
