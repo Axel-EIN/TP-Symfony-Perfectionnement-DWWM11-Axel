@@ -22,10 +22,6 @@ class ArticleType extends AbstractType {
             ->add('datePublication', DateType::class, [
                 'label' => 'Date de publication',
                 'widget' => 'single_text',
-            ])
-            ->add('auteur', EntityType::class, [
-                'class' => Utilisateur::class,
-                'choice_label' => 'pseudo'
             ]);
     }
 

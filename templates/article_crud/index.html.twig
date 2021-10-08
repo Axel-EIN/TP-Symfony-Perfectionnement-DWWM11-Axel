@@ -27,7 +27,7 @@
                 <td>
                     <a href="{{ path('article_crud_show', {'id': article.id}) }}" class="btn btn-primary">Voir</a>
 
-                    {% if is_granted('ROLE_ECRIVAIN') %}
+                    {% if is_granted('ROLE_ECRIVAIN') and article.auteur.id == app.user.id %}
                         <a href="{{ path('article_crud_edit', {'id': article.id}) }}" class="btn btn-warning">Éditer</a>
                     {% endif %}
                     
