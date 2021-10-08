@@ -31,6 +31,9 @@
                         <a class="nav-link" href="{{ path('home') }}">Accueil</a>
                     </li>
 
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('article_crud_index') }}">Les articles</a>
+                    </li>
 
                     {% if is_granted('ROLE_ADMIN') %}
                         <li class="nav-item">
@@ -39,7 +42,7 @@
                     {% endif %}
                     
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('article_crud_index') }}">Les articles</a>
+                        <a class="nav-link" href="{{ path('contact') }}">Contact</a>
                     </li>
 
                     {% if not app.user %}
@@ -66,6 +69,15 @@
                 </ul>
             </div>
         </nav>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Succès</strong> {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
 
         {% block body %}{% endblock %}
 

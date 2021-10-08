@@ -59,8 +59,12 @@
             {% for commentaire in article.commentaires %}
                 <tr>
                     <td>{{ commentaire.auteur.pseudo }}</td>
-                    <td>{{ commentaire.datePublication ? article.datePublication|date('d/m/Y') : '' }}</td>
+                    <td>{{ commentaire.datePublication ? commentaire.datePublication|date('d/m/Y') : '' }}</td>
                     <td>{{ commentaire.contenu }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3" class="text-center">Pas de commentaire</td>
                 </tr>
             {% endfor %}
         </tbody>
