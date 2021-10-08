@@ -27,6 +27,18 @@ class Commentaire
      */
     private $datePublication;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Utilisateur::class, inversedBy="commentaires")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $auteur;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Article::class, inversedBy="commentaires")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $article;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -52,6 +64,30 @@ class Commentaire
     public function setDatePublication(\DateTimeInterface $datePublication): self
     {
         $this->datePublication = $datePublication;
+
+        return $this;
+    }
+
+    public function getAuteur(): ?Utilisateur
+    {
+        return $this->auteur;
+    }
+
+    public function setAuteur(?Utilisateur $auteur): self
+    {
+        $this->auteur = $auteur;
+
+        return $this;
+    }
+
+    public function getArticle(): ?Article
+    {
+        return $this->article;
+    }
+
+    public function setArticle(?Article $article): self
+    {
+        $this->article = $article;
 
         return $this;
     }

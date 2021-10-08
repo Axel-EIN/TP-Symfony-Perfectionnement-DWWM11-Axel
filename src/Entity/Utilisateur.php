@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UtilisateurRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -34,6 +36,22 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string")
      */
     private $motDePasse;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Article::class, mappedBy="auteur")
+     */
+    private $articles;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Commentaire::class, mappedBy="auteur", orphanRemoval=true)
+     */
+    private $commentaires;
+
+    public function __construct()
+    {
+        $this->articles = new ArrayCollection();
+        $this->commentaires = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -122,5 +140,65 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection|Article[]
+     */
+    public function getArticles(): Collection
+    {
+        return $this->articles;
+    }
+
+    public function addArticle(Article $article): self
+    {
+        if (!$this->articles->contains($article)) {
+            $this->articles[] = $article;
+            $article->setAuteur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeArticle(Article $article): self
+    {
+        if ($this->articles->removeElement($article)) {
+            // set the owning side to null (unless already changed)
+            if ($article->getAuteur() === $this) {
+                $article->setAuteur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Commentaire[]
+     */
+    public function getCommentaires(): Collection
+    {
+        return $this->commentaires;
+    }
+
+    public function addCommentaire(Commentaire $commentaire): self
+    {
+        if (!$this->commentaires->contains($commentaire)) {
+            $this->commentaires[] = $commentaire;
+            $commentaire->setAuteur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommentaire(Commentaire $commentaire): self
+    {
+        if ($this->commentaires->removeElement($commentaire)) {
+            // set the owning side to null (unless already changed)
+            if ($commentaire->getAuteur() === $this) {
+                $commentaire->setAuteur(null);
+            }
+        }
+
+        return $this;
     }
 }
