@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvel article{% endblock %}
+
+{% block body %}
+<h1>Nouvel article</h1>
+
+{{ include('article_crud/_form.html.twig', {'button_label': 'Créer'}) }}
+
+<a href="{{ path('article_crud_index') }}" class="btn btn-info">Retour à la liste</a>
+{% endblock %}

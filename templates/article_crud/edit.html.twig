@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Article{% endblock %}
+
+{% block body %}
+    <h1>Edit Article</h1>
+
+    {{ include('article_crud/_form.html.twig', {'button_label': 'Éditer'}) }}
+    
+    <div class="d-flex gap-4 mt-4">
+        <a href="{{ path('article_crud_index') }}" class="btn btn-info mr-2">Retour à la liste</a>
+        {{ include('article_crud/_delete_form.html.twig') }}
+    </div>
+{% endblock %}

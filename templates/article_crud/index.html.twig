@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Les articles{% endblock %}
+
+{% block body %}
+    <h1>Les articles</h1>
+
+    <table id="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Titre</th>
+                <th>Contenu</th>
+                <th>Image</th>
+                <th>DatePublication</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for article in articles %}
+            <tr>
+                <td>{{ article.id }}</td>
+                <td>{{ article.titre }}</td>
+                <td>{{ article.contenu }}</td>
+                <td>{{ article.image }}</td>
+                <td>{{ article.datePublication ? article.datePublication|date('d/m/Y') : '' }}</td>
+                <td>
+                    <a href="{{ path('article_crud_show', {'id': article.id}) }}" class="btn btn-primary">Voir</a>
+                    <a href="{{ path('article_crud_edit', {'id': article.id}) }}" class="btn btn-warning">Éditer</a>
+                    {{ include('article_crud/_delete_form.html.twig') }}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" class="text-center">Aucun article</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('article_crud_new') }}" class="btn btn-success">Nouvel article</a>
+{% endblock %}
+
+{% block css %}
+{{parent()}}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+{% endblock %}
+
+{% block js %}
+{{parent()}}
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#table').DataTable();
+    });
+</script>
+{% endblock %}
