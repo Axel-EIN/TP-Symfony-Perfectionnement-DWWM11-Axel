@@ -55,27 +55,31 @@
 <table class="table">
     <thead>
         <tr>
+            <th>Note</th>
             <th>Auteur</th>
             <th>Date de publication</th>
             <th>Contenu</th>
-            {% if is_granted('ROLE_MODO') %}
-                <th>Action</th>
-            {% endif %}
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
         {% for commentaire in article.commentaires %}
-        <tr>
+        <tr class="{{ commentaire.note < 0 ? 'text-muted' : '' }}">
+            <td>{{ commentaire.note }}</td>
             <td>{{ commentaire.auteur.pseudo }}</td>
             <td>{{ commentaire.datePublication ? commentaire.datePublication|date('d/m/Y') : '' }}</td>
             <td>{{ commentaire.contenu }}</td>
-            {% if is_granted('ROLE_MODO') %}
-                <td><a href="{{ path('delete_comment', {'id': commentaire.id}) }}?csrf={{ csrf_token('delete' ~ commentaire.id) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr ?');">Supprimer</a></td>
-            {% endif %}
+            <td>
+                <a href="{{ path('downvote_comment', {id: commentaire.id }) }}" class="btn btn-secondary p-2">-</a>
+                <a href="{{ path('upvote_comment', {id: commentaire.id }) }}" class="btn btn-info p-2">+</a>
+                {% if is_granted('ROLE_MODO') %}
+                <a href="{{ path('delete_comment', {'id': commentaire.id}) }}?csrf={{ csrf_token('delete' ~ commentaire.id) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr ?');">Supprimer</a>
+                {% endif %}
+            </td>
         </tr>
         {% else %}
         <tr>
-            <td colspan="{{ is_granted('ROLE_MODO') ? 4 : 3 }}" class="text-center">Pas de commentaire</td>
+            <td colspan="5" class="text-center">Pas de commentaire</td>
         </tr>
         {% endfor %}
     </tbody>

@@ -58,4 +58,34 @@ class CommentaireController extends AbstractController {
             'id' => $article_id
         ]);
     }
+
+    /**
+     * @Route("/commentaire/{id}/up", name="upvote_comment")
+     * @IsGranted("ROLE_USER")
+     */
+    public function upVote(Commentaire $commentaire, EntityManagerInterface $em) {
+        $commentaire->upVote();
+
+        $em->persist($commentaire);
+        $em->flush();
+
+        return $this->redirectToRoute('article_crud_show', [
+            'id' => $commentaire->getArticle()->getId()
+        ]);
+    }
+
+    /**
+     * @Route("/commentaire/{id}/down", name="downvote_comment")
+     * @IsGranted("ROLE_USER")
+     */
+    public function downVote(Commentaire $commentaire, EntityManagerInterface $em) {
+        $commentaire->downVote();
+
+        $em->persist($commentaire);
+        $em->flush();
+
+        return $this->redirectToRoute('article_crud_show', [
+            'id' => $commentaire->getArticle()->getId()
+        ]);
+    }
 }
