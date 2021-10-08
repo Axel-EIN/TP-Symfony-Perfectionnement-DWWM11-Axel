@@ -2,23 +2,24 @@
 
 namespace App\Controller;
 
+use DateTime;
 use App\Entity\Article;
 use App\Entity\Commentaire;
-use DateTime;
+use Symfony\Component\Mime\Email;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
 
 class CommentaireController extends AbstractController {
     /**
      * @Route("/article/{id}/commentaire/new", name="post_comment")
      * @IsGranted("ROLE_USER")
      */
-    public function post(Article $article, Request $request, EntityManagerInterface $em): Response {
+    public function post(Article $article, Request $request, EntityManagerInterface $em, MailerInterface $mailer): Response {
 
         $commentaire = new Commentaire;
         $commentaire->setDatePublication(new DateTime);
@@ -28,6 +29,13 @@ class CommentaireController extends AbstractController {
 
         $em->persist($commentaire);
         $em->flush();
+
+        $mailer->send(
+            (new Email)
+                ->from('Blogmania <test.symfony@2alheure.fr>')
+                ->to($article->getAuteur()->getEmail())
+                ->text('Un utilisateur a commenté votre article "' . $article->getTitre() . '".')
+        );
 
         return $this->redirectToRoute('article_crud_show', [
             'id' => $article->getId()
