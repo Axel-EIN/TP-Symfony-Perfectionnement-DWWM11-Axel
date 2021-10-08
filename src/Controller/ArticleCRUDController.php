@@ -57,15 +57,8 @@ class ArticleCRUDController extends AbstractController {
      * @Route("/{id}", name="article_crud_show", methods={"GET"})
      */
     public function show(Article $article): Response {
-        $formulaireComment = $this->createForm(CommentaireType::class, null, [
-            'action' => $this->generateUrl('post_comment', [
-                'id' => $article->getId()
-            ]) // Equivalent de la fonction path() de Twig
-        ]);
-
         return $this->render('article_crud/show.html.twig', [
             'article' => $article,
-            'formulaireComment' => $formulaireComment->createView()
         ]);
     }
 

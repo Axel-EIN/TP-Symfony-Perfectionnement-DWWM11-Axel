@@ -16,14 +16,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class CommentaireController extends AbstractController {
     /**
-     * @Route("/article/{id}/commentaire/new", name="post_comment")
+     * @Route("/article/{id}/commentaire/new", name="post_comment", methods={"POST"})
      * @IsGranted("ROLE_USER")
      */
-    public function post(Article $article, Request $request, EntityManagerInterface $em, MailerInterface $mailer): Response {
+    public function post(Article $article, Request $request, EntityManagerInterface $em, MailerInterface $mailer) {
 
         $commentaire = new Commentaire;
         $commentaire->setDatePublication(new DateTime);
-        $commentaire->setContenu($request->request->get('commentaire')['contenu']);
+        $commentaire->setNote(0);
+        $commentaire->setContenu($request->request->get('contenu'));
         $commentaire->setAuteur($this->getUser());
         $commentaire->setArticle($article);
 
@@ -37,26 +38,22 @@ class CommentaireController extends AbstractController {
                 ->text('Un utilisateur a commenté votre article "' . $article->getTitre() . '".')
         );
 
-        return $this->redirectToRoute('article_crud_show', [
-            'id' => $article->getId()
+        return $this->json($commentaire, 201, [], [
+            'groups' => ['to-serialize']
         ]);
     }
 
     /**
-     * @Route("/commentaire/{id}/delete", name="delete_comment")
+     * @Route("/commentaire/{id}/delete", name="delete_comment", methods={"DELETE"})
      * @IsGranted("ROLE_MODO")
      */
     public function delete(Commentaire $commentaire, Request $request, EntityManagerInterface $em) {
-        $article_id = $commentaire->getArticle()->getId();
-
-        if ($this->isCsrfTokenValid('delete' . $commentaire->getId(), $request->query->get('csrf'))) {
+        if ($this->isCsrfTokenValid('delete-comment', $request->query->get('csrf'))) {
             $em->remove($commentaire);
             $em->flush();
         }
 
-        return $this->redirectToRoute('article_crud_show', [
-            'id' => $article_id
-        ]);
+        return new Response;
     }
 
     /**

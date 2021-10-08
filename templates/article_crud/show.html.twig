@@ -49,10 +49,19 @@
 <h2>Commentaires</h2>
 
 {% if app.user %}
-{{ form(formulaireComment) }}
+
+<form id="form-comment">
+    <div class="form-group">
+        <label for="commentaire_contenu" class="required">Contenu</label>
+        <textarea id="commentaire_contenu" name="contenu" required="required"
+            class="form-control"></textarea>
+    </div>
+    <button type="submit" id="commentaire_submit" name="submit" class="btn-primary btn">Poster</button>
+</form>
+
 {% endif %}
 
-<table class="table">
+<table id="commentaires" class="table">
     <thead>
         <tr>
             <th>Note</th>
@@ -64,7 +73,7 @@
     </thead>
     <tbody>
         {% for commentaire in article.commentaires %}
-        <tr class="{{ commentaire.note < 0 ? 'text-muted' : '' }}">
+        <tr class="{{ commentaire.note < 0 ? 'text-muted' : '' }}" id="commentaire-{{ commentaire.id }}">
             <td>{{ commentaire.note }}</td>
             <td>{{ commentaire.auteur.pseudo }}</td>
             <td>{{ commentaire.datePublication ? commentaire.datePublication|date('d/m/Y') : '' }}</td>
@@ -73,7 +82,7 @@
                 <a href="{{ path('downvote_comment', {id: commentaire.id }) }}" class="btn btn-secondary p-2">-</a>
                 <a href="{{ path('upvote_comment', {id: commentaire.id }) }}" class="btn btn-info p-2">+</a>
                 {% if is_granted('ROLE_MODO') %}
-                <a href="{{ path('delete_comment', {'id': commentaire.id}) }}?csrf={{ csrf_token('delete' ~ commentaire.id) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr ?');">Supprimer</a>
+                <button class="btn btn-danger" onclick="deleteComment({{ commentaire.id }})">Supprimer</button>
                 {% endif %}
             </td>
         </tr>
@@ -84,4 +93,64 @@
         {% endfor %}
     </tbody>
 </table>
+{% endblock %}
+
+{% block js %}
+
+{{ parent() }}
+
+{% if is_granted('ROLE_MODO') %}
+<script>
+    function deleteComment(id) {
+        if (confirm('Êtes-vous sûr ?')) {
+            $.ajax({
+                url: "/commentaire/" + id + "/delete?csrf={{ csrf_token('delete-comment') }}",
+                method: "DELETE",
+                success: function (data) {
+                    $('#commentaire-' + id).remove();
+                }
+            })
+        }
+    }
+</script>
+{% endif %}
+
+{% if app.user %}
+<script>
+
+$(function() {
+    $('#form-comment').on('submit', function (e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: "/article/{{ article.id }}/commentaire/new",
+            method: "POST",
+            data: {
+                contenu: $('#form-comment textarea').val()
+            },
+            success: function (data) {
+                $('#commentaires tbody').prepend(
+                    `<tr class="" id="commentaire-${data.id}">
+            <td>0</td>
+            <td>{{ app.user.pseudo }}</td>
+            <td>{{ "now"|date('d/m/Y') }}</td>
+            <td>${data.contenu}</td>
+            <td>
+                <a href="/commentaire/${data.id}/up" class="btn btn-secondary p-2">-</a>
+                <a href="/commentaire/${data.id}/down" class="btn btn-info p-2">+</a>
+                {% if is_granted('ROLE_MODO') %}
+                <button class="btn btn-danger" onclick="deleteComment(${data.id})">Supprimer</button>
+                {% endif %}
+            </td>
+        </tr>`
+                )
+            }
+        })
+    });
+})
+
+</script>
+{% endif %}
+
+
 {% endblock %}

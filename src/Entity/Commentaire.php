@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\CommentaireRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=CommentaireRepository::class)
@@ -13,16 +14,19 @@ class Commentaire {
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups("to-serialize")
      */
     private $id;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups("to-serialize")
      */
     private $contenu;
 
     /**
      * @ORM\Column(type="date")
+     * @Groups("to-serialize")
      */
     private $datePublication;
 
@@ -101,7 +105,7 @@ class Commentaire {
         $this->note++;
         return $this;
     }
-    
+
     public function downVote() {
         $this->note--;
         return $this;
