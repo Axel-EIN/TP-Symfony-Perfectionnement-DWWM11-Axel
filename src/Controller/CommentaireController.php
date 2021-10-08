@@ -20,27 +20,29 @@ class CommentaireController extends AbstractController {
      * @IsGranted("ROLE_USER")
      */
     public function post(Article $article, Request $request, EntityManagerInterface $em, MailerInterface $mailer) {
+        if ($this->isCsrfTokenValid('post-comment', $request->query->get('csrf'))) {
 
-        $commentaire = new Commentaire;
-        $commentaire->setDatePublication(new DateTime);
-        $commentaire->setNote(0);
-        $commentaire->setContenu($request->request->get('contenu'));
-        $commentaire->setAuteur($this->getUser());
-        $commentaire->setArticle($article);
+            $commentaire = new Commentaire;
+            $commentaire->setDatePublication(new DateTime);
+            $commentaire->setNote(0);
+            $commentaire->setContenu($request->request->get('contenu'));
+            $commentaire->setAuteur($this->getUser());
+            $commentaire->setArticle($article);
 
-        $em->persist($commentaire);
-        $em->flush();
+            $em->persist($commentaire);
+            $em->flush();
 
-        $mailer->send(
-            (new Email)
-                ->from('Blogmania <test.symfony@2alheure.fr>')
-                ->to($article->getAuteur()->getEmail())
-                ->text('Un utilisateur a commenté votre article "' . $article->getTitre() . '".')
-        );
+            $mailer->send(
+                (new Email)
+                    ->from('Blogmania <test.symfony@2alheure.fr>')
+                    ->to($article->getAuteur()->getEmail())
+                    ->text('Un utilisateur a commenté votre article "' . $article->getTitre() . '".')
+            );
 
-        return $this->json($commentaire, 201, [], [
-            'groups' => ['to-serialize']
-        ]);
+            return $this->json($commentaire, 201, [], [
+                'groups' => ['to-serialize']
+            ]);
+        } else return new Response;
     }
 
     /**

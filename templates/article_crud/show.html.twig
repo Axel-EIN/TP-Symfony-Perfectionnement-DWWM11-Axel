@@ -123,7 +123,7 @@ $(function() {
         e.preventDefault();
 
         $.ajax({
-            url: "/article/{{ article.id }}/commentaire/new",
+            url: "/article/{{ article.id }}/commentaire/new?csrf={{ csrf_token('post-comment') }}",
             method: "POST",
             data: {
                 contenu: $('#form-comment textarea').val()
