@@ -26,8 +26,14 @@
                 <td>{{ article.datePublication ? article.datePublication|date('d/m/Y') : '' }}</td>
                 <td>
                     <a href="{{ path('article_crud_show', {'id': article.id}) }}" class="btn btn-primary">Voir</a>
-                    <a href="{{ path('article_crud_edit', {'id': article.id}) }}" class="btn btn-warning">Éditer</a>
-                    {{ include('article_crud/_delete_form.html.twig') }}
+
+                    {% if is_granted('ROLE_ECRIVAIN') %}
+                        <a href="{{ path('article_crud_edit', {'id': article.id}) }}" class="btn btn-warning">Éditer</a>
+                    {% endif %}
+                    
+                    {% if is_granted('ROLE_ADMIN') %}
+                        {{ include('article_crud/_delete_form.html.twig') }}
+                    {% endif %}
                 </td>
             </tr>
             {% else %}

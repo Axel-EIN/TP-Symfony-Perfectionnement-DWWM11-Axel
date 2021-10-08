@@ -26,6 +26,7 @@ class ArticleCRUDController extends AbstractController {
 
     /**
      * @Route("/new", name="article_crud_new", methods={"GET","POST"})
+     * @IsGranted("ROLE_ECRIVAIN")
      */
     public function new(Request $request): Response {
         $article = new Article();
@@ -59,6 +60,7 @@ class ArticleCRUDController extends AbstractController {
 
     /**
      * @Route("/{id}/edit", name="article_crud_edit", methods={"GET","POST"})
+     * @IsGranted("ROLE_ECRIVAIN")
      */
     public function edit(Request $request, Article $article): Response {
         $form = $this->createForm(ArticleType::class, $article);
@@ -78,6 +80,7 @@ class ArticleCRUDController extends AbstractController {
 
     /**
      * @Route("/{id}/delete", name="article_crud_delete", methods={"GET"})
+     * @IsGranted("ROLE_ADMIN")
      */
     public function delete(Request $request, Article $article): Response {
         if ($this->isCsrfTokenValid('delete' . $article->getId(), $request->query->get('csrf'))) {
