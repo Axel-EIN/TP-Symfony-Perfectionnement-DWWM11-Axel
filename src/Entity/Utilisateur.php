@@ -14,8 +14,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Entity(repositoryClass=UtilisateurRepository::class)
  * @UniqueEntity(fields={"pseudo"}, message="There is already an account with this pseudo")
  */
-class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
-{
+class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -49,24 +48,20 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $commentaires;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->articles = new ArrayCollection();
         $this->commentaires = new ArrayCollection();
     }
 
-    public function getId(): ?int
-    {
+    public function getId(): ?int {
         return $this->id;
     }
 
-    public function getPseudo(): ?string
-    {
+    public function getPseudo(): ?string {
         return $this->pseudo;
     }
 
-    public function setPseudo(string $pseudo): self
-    {
+    public function setPseudo(string $pseudo): self {
         $this->pseudo = $pseudo;
 
         return $this;
@@ -77,24 +72,21 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
      *
      * @see UserInterface
      */
-    public function getUserIdentifier(): string
-    {
+    public function getUserIdentifier(): string {
         return (string) $this->pseudo;
     }
 
     /**
      * @deprecated since Symfony 5.3, use getUserIdentifier instead
      */
-    public function getUsername(): string
-    {
+    public function getUsername(): string {
         return (string) $this->pseudo;
     }
 
     /**
      * @see UserInterface
      */
-    public function getRoles(): array
-    {
+    public function getRoles(): array {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
@@ -102,8 +94,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
-    public function setRoles(array $roles): self
-    {
+    public function setRoles(array $roles): self {
         $this->roles = $roles;
 
         return $this;
@@ -112,13 +103,24 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see PasswordAuthenticatedUserInterface
      */
-    public function getPassword(): string
-    {
+    public function getPassword(): string {
         return $this->motDePasse;
     }
 
-    public function setPassword(string $motDePasse): self
-    {
+    public function setPassword(string $motDePasse): self {
+        $this->motDePasse = $motDePasse;
+
+        return $this;
+    }
+
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getMotDePasse(): string {
+        return $this->motDePasse;
+    }
+
+    public function setMotDePasse(string $motDePasse): self {
         $this->motDePasse = $motDePasse;
 
         return $this;
@@ -130,16 +132,14 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
      *
      * @see UserInterface
      */
-    public function getSalt(): ?string
-    {
+    public function getSalt(): ?string {
         return null;
     }
 
     /**
      * @see UserInterface
      */
-    public function eraseCredentials()
-    {
+    public function eraseCredentials() {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
     }
@@ -147,13 +147,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection|Article[]
      */
-    public function getArticles(): Collection
-    {
+    public function getArticles(): Collection {
         return $this->articles;
     }
 
-    public function addArticle(Article $article): self
-    {
+    public function addArticle(Article $article): self {
         if (!$this->articles->contains($article)) {
             $this->articles[] = $article;
             $article->setAuteur($this);
@@ -162,8 +160,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeArticle(Article $article): self
-    {
+    public function removeArticle(Article $article): self {
         if ($this->articles->removeElement($article)) {
             // set the owning side to null (unless already changed)
             if ($article->getAuteur() === $this) {
@@ -177,13 +174,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection|Commentaire[]
      */
-    public function getCommentaires(): Collection
-    {
+    public function getCommentaires(): Collection {
         return $this->commentaires;
     }
 
-    public function addCommentaire(Commentaire $commentaire): self
-    {
+    public function addCommentaire(Commentaire $commentaire): self {
         if (!$this->commentaires->contains($commentaire)) {
             $this->commentaires[] = $commentaire;
             $commentaire->setAuteur($this);
@@ -192,8 +187,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeCommentaire(Commentaire $commentaire): self
-    {
+    public function removeCommentaire(Commentaire $commentaire): self {
         if ($this->commentaires->removeElement($commentaire)) {
             // set the owning side to null (unless already changed)
             if ($commentaire->getAuteur() === $this) {

@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Utilisateurs{% endblock %}
+
+{% block body %}
+<h1>Utilisateurs</h1>
+
+<table id="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Pseudo</th>
+            <th>Roles</th>
+            <th>actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for utilisateur in utilisateurs %}
+        <tr>
+            <td>{{ utilisateur.id }}</td>
+            <td>{{ utilisateur.pseudo }}</td>
+            <td>{{ utilisateur.roles ? utilisateur.roles|join(', ') : '' }}</td>
+            <td>
+                <a href="{{ path('utilisateur_crud_show', {'id': utilisateur.id}) }}" class="btn btn-primary">show</a>
+                <a href="{{ path('utilisateur_crud_edit', {'id': utilisateur.id}) }}" class="btn btn-warning">edit</a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="5">Aucun utilisateur</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{{ path('utilisateur_crud_new') }}" class="btn btn-success">Nouvel utilisateur</a>
+{% endblock %}
+
+{% block css %}
+{{parent()}}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+{% endblock %}
+
+{% block js %}
+{{parent()}}
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#table').DataTable();
+    });
+</script>
+{% endblock %}
