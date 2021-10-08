@@ -4,10 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Article;
 use App\Form\ArticleType;
+use App\Form\CommentaireType;
 use App\Repository\ArticleRepository;
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
- * @Route("/article/crud")
+ * @Route("/article")
  */
 class ArticleCRUDController extends AbstractController {
     /**
@@ -57,8 +57,15 @@ class ArticleCRUDController extends AbstractController {
      * @Route("/{id}", name="article_crud_show", methods={"GET"})
      */
     public function show(Article $article): Response {
+        $formulaireComment = $this->createForm(CommentaireType::class, null, [
+            'action' => $this->generateUrl('post_comment', [
+                'id' => $article->getId()
+            ]) // Equivalent de la fonction path() de Twig
+        ]);
+
         return $this->render('article_crud/show.html.twig', [
             'article' => $article,
+            'formulaireComment' => $formulaireComment->createView()
         ]);
     }
 
@@ -68,7 +75,7 @@ class ArticleCRUDController extends AbstractController {
      */
     public function edit(Request $request, Article $article): Response {
 
-        if ($this->getUser()->getId() != $article->getAuteur()->getId()) 
+        if ($this->getUser()->getId() != $article->getAuteur()->getId())
             // Comparer des objets n'est pas spécialement sûr
             // (Le comportement peut être imprévisible)
             // Du coup on va plutôt, par sécurité, comparer les id
