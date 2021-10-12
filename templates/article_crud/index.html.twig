@@ -44,7 +44,9 @@
         </tbody>
     </table>
 
-    <a href="{{ path('article_crud_new') }}" class="btn btn-success">Nouvel article</a>
+    {% if is_granted('ROLE_ECRIVAIN') and article.auteur.id == app.user.id %}
+        <a href="{{ path('article_crud_new') }}" class="btn btn-success">Nouvel article</a>
+    {% endif %}
 {% endblock %}
 
 {% block css %}
